@@ -1,9 +1,7 @@
 import type { Showcase } from '~/types/entities.types'
 
-export const showcaseApi = {
+export const createShowcaseApi = (baseURL: string) => ({
   async getMainPage(): Promise<Showcase> {
-    const config = useRuntimeConfig()
-    const baseUrl = config.public.apiBaseUrl
-    return $fetch(`${baseUrl}/showcases/showcases/mainpage/web/`)
+    return $fetch(`${baseURL}/showcases/showcases/mainpage/web/`)
   }
-}
+})

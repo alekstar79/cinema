@@ -34,6 +34,11 @@ export default defineNuxtConfig({
     strict: true,
   },
   nitro: {
-    preset: 'node-server',
-  },
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+      // @ts-ignore
+      fallback: 'index.html'
+    }
+  }
 })
