@@ -1,5 +1,7 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
+const isGenerate = process.argv.includes('generate')
+
 export default defineNuxtConfig({
   ssr: true,
   compatibilityDate: '2024-11-01',
@@ -34,11 +36,13 @@ export default defineNuxtConfig({
     strict: true,
   },
   nitro: {
-    prerender: {
-      crawlLinks: true,
-      routes: ['/'],
-      // @ts-ignore
-      fallback: 'index.html'
-    }
+    ...(isGenerate && {
+      prerender: {
+        crawlLinks: true,
+        routes: ['/'],
+        // @ts-ignore
+        fallback: 'index.html',
+      },
+    })
   }
 })
