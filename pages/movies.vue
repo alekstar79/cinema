@@ -139,8 +139,10 @@ const filteredItems = computed(() => {
     result.sort((a, b) => {
       let aVal = a[field as keyof ContentItem]
       let bVal = b[field as keyof ContentItem]
-      if (aVal == null) aVal = ''
-      if (bVal == null) bVal = ''
+
+      aVal = aVal === null || aVal === undefined ? '' : aVal
+      bVal = bVal === null || bVal === undefined ? '' : bVal
+
       if (order === 'asc') return aVal > bVal ? 1 : -1
       else return aVal < bVal ? 1 : -1
     })
@@ -157,10 +159,12 @@ const applyFilters = () => {
 
 const updateQuery = () => {
   const query: any = {}
+
   if (filters.genre) query.genre = filters.genre
   if (filters.year) query.year = filters.year
   if (sort.value) query.sort = sort.value
   if (page.value > 1) query.page = page.value
+
   router.replace({ query })
 }
 
