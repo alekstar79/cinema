@@ -1,75 +1,105 @@
-# Nuxt Minimal Starter
+# Cinema TS
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Веб-приложение для отображения каталога фильмов, сериалов и шоу. Данные загружаются с внешнего API, поддерживаются резолвинг справочников (жанры, метки, персоны), фильтрация, поиск, детальные страницы контента. Реализована адаптивная сетка и SPA‑навигация.
 
-## Setup
+Проект построен на **Nuxt 3** (с использованием Pinia, Vuetify 3, TypeScript) и может работать в режимах SSR, SSG и SPA.
 
-Make sure to install dependencies:
+---
 
+## Стек технологий
+
+- **Nuxt 3** (Vue 3, Vite) – фреймворк
+- **Pinia** – управление состоянием
+- **Vuetify 3** – UI-библиотека
+- **TypeScript** – типизация
+- **Vitest** – тестирование
+- **Vite** – сборка
+
+---
+
+## Основные возможности
+
+- Главная страница с витриной контента (слайды)
+- Страницы списков: фильмы, сериалы, шоу (с фильтрацией по жанру/году и сортировкой)
+- Детальная страница контента (с постером, описанием, жанрами, метками, участниками)
+- Поиск по названию и описанию (на основе данных с главной)
+- Резолвинг OID‑ссылок (жанры, метки, персоны) с кешированием в `dictionaryStore`
+- Полноценная SPA‑навигация (переходы без перезагрузки)
+- Адаптивный дизайн (сетка меняется под мобильные/планшеты/десктоп)
+- Генерация статического сайта (SSG) и динамического сервера (SSR)
+- Юнит‑тесты для ключевой логики и компонентов
+
+---
+
+## Установка и запуск
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/alekstar79/cinema.git
+   cd cinema
+   ```
+2. Установите зависимости:
+   ```bash
+   yarn install
+   ```
+
+## Режимы работы
+
+### Разработка (с прокси и горячей перезагрузкой)
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
 yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
-
+### Сборка динамического SSR-сервера
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
 yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
 yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Генерация статического сайта (SSG)
+```bash
+yarn generate
+yarn preview   # или npx serve .output/public -s
+```
+
+### Тестирование
+```bash
+yarn test            # однократный прогон
+yarn test:coverage   # с отчётом о покрытии
+```
+
+## Ключевые архитектурные решения
+
+1. Резолвер OID – все ссылки вида тип:идентификатор автоматически заменяются на полные объекты из справочников (с кешированием).
+
+2. Хранилища Pinia – showcaseStore хранит данные главной страницы, dictionaryStore – кеш справочников.
+
+3. Фабрики API – для каждого типа эндпоинта создаётся функция с параметром baseURL, что позволяет на сервере использовать прямой URL, а на клиенте – прокси.
+
+4. Прокси на сервере – в режиме разработки и при SSR запросы к /api перенаправляются на внешний API (через server/api/[...path].ts).
+
+5. Единый вход для всех страниц – данные витрины загружаются через useAsyncData на каждой странице списка и детальной странице, что гарантирует корректную гидратацию.
+
+6. Адаптивная сетка – Vuetify grid с breakpoints.
+
+7. Тёмная/светлая тема – переключение через useTheme из Vuetify.
+
+## Тестирование
+
+Проект покрыт 20 unit‑тестами, включая:
+
+- Парсинг OID (oid.parser.spec.ts)
+- Вспомогательные функции (asset.helper.spec.ts)
+- Логику резолвера (resolver.service.spec.ts)
+- Хранилища Pinia (dictionaryStore.spec.ts, showcaseStore.spec.ts)
+- Компоненты (ContentCard.spec.ts, ErrorMessage.spec.ts)
+
+Для запуска тестов используйте yarn test или yarn test:coverage (с отчётом покрытия).
+
+## Деплой
+
+- Статический хостинг (Netlify, Vercel, GitHub Pages) – после yarn generate выгружайте содержимое папки .output/public.
+- Node.js сервер – после yarn build запускайте .output/server/index.mjs. Не забудьте настроить прокси для /api на вашем сервере (например, через Nginx), чтобы клиентские запросы шли через ваш домен.
+
+Лицензия
+MIT © [Aleksey Tarasenko](https://github.com/alekstar79)
