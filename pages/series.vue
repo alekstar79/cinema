@@ -50,11 +50,18 @@
         </v-row>
 
         <ClientOnly>
-          <v-pagination
-            v-model="page"
-            :length="totalPages"
-            class="mt-4"
-          />
+          <div class="d-flex justify-center align-center flex-wrap mt-4">
+            <v-pagination
+              v-model="page"
+              :length="totalPages"
+              :total-visible="7"
+              circle
+              class="mr-4"
+            />
+            <span class="text-body-2 text-medium-emphasis">
+              Показано {{ (page - 1) * pageSize + 1 }} – {{ Math.min(page * pageSize, series.length) }} из {{ series.length }}
+            </span>
+          </div>
         </ClientOnly>
       </v-col>
     </v-row>
@@ -69,30 +76,29 @@ import ContentCard from '~/components/content/ContentCard.vue'
 
 const route = useRoute()
 const router = useRouter()
+const showcaseStore = useShowcaseStore()
+const dictionaryStore = useDictionaryStore()
 
-const { data: pageData } = await useAsyncData<{ series: ContentItem[]; genres: Genre[] }>(
-  'series-page',
-  async () => {
-    const showcaseStore = useShowcaseStore()
-    await showcaseStore.fetchMainPage()
-    const allItems = showcaseStore.slides.map((s) => s.title).filter(Boolean)
-    const series = allItems.filter((item) => item.oid.startsWith('series:'))
+await useAsyncData('showcase-data', async () => {
+  await showcaseStore.fetchMainPage()
+  return true
+}, {
+  server: true,
+  lazy: false,
+})
 
-    const dictionaryStore = useDictionaryStore()
-    const genres: Genre[] = []
-    dictionaryStore.entities.forEach((value: any, key: string) => {
-      if (key.startsWith('genre:')) {
-        genres.push(value)
-      }
-    })
+const genres = computed(() => {
+  const entities = dictionaryStore.entities
+  return Object.values(entities).filter(
+    (value): value is Genre => value.oid?.startsWith('genre:')
+  )
+})
 
-    return { series, genres }
-  },
-  { server: true }
-)
+const allItems = computed<ContentItem[]>(() => {
+  return showcaseStore.slides.map(slide => slide.title).filter(Boolean)
+})
 
-const series = computed(() => pageData.value?.series || [])
-const genres = computed(() => pageData.value?.genres || [])
+const series = computed(() => allItems.value.filter(item => item.oid.startsWith('series:')))
 
 const page = ref(Number(route.query.page) || 1)
 const pageSize = 20

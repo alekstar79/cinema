@@ -88,33 +88,33 @@ import { useDictionaryStore } from '~/stores/dictionaryStore'
 import { useShowcaseStore } from '~/stores/showcaseStore'
 import { EntityResolver } from '~/services/resolver/entityResolver.service'
 import { createDictionariesApi } from '~/services/api/endpoints/dictionaries'
-import { formatAssetUrl } from '~/utils/asset.helper'
 import ErrorMessage from '~/components/ui/ErrorMessage.vue'
+import { formatAssetUrl } from '~/utils/asset.helper'
 
 const route = useRoute()
 const config = useRuntimeConfig()
+const baseURL = config.public.apiBaseUrl
 const { type, id } = route.params
 
 const apiType = type === 'movies' ? 'content/movies' :
   type === 'series' ? 'content/series' :
     type === 'shows' ? 'content/shows' : type
 
-const dictionaryStore = useDictionaryStore()
 const showcaseStore = useShowcaseStore()
+const dictionaryStore = useDictionaryStore()
 
-// Определяем базовый URL в зависимости от окружения
-const clientBase = config.public.apiBaseUrl // '/api'
-const serverBase = process.env.API_BASE_URL || 'https://cms.test.ksfr.tech/api/v1'
-const apiBase = import.meta.server ? serverBase : clientBase
+await useAsyncData('showcase-data', async () => {
+  await showcaseStore.fetchMainPage()
+  return true
+}, { server: true, lazy: false })
 
-const dictionariesApi = createDictionariesApi(apiBase)
+const dictionariesApi = createDictionariesApi(baseURL)
 const resolver = new EntityResolver(dictionaryStore, dictionariesApi.getEntity)
 
 const { data: content, pending: loading, error } = await useAsyncData<ContentItem | null>(
   `content-${apiType}-${id}`,
   async () => {
-    const url = `${apiBase}/${apiType}/${id}/`
-
+    const url = `${baseURL}/${apiType}/${id}/`
     try {
       const rawData = await $fetch<ContentItem>(url)
       const resolved = await resolver.resolve(rawData)
@@ -141,14 +141,11 @@ const posterFromDetail = computed(() => {
 
 const posterFromShowcase = computed(() => {
   if (!content.value?.oid) return undefined
-
   const slide = showcaseStore.slides.find(s => s.title.oid === content.value?.oid)
   if (!slide) return undefined
-
   const poster = slide.title.assets.find(a =>
     a.asset_type?.toLowerCase() === 'poster'
   )
-
   if (!poster || !poster.resize_url) return undefined
   return formatAssetUrl(poster.resize_url, 300, 450)
 })
