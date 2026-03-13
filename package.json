@@ -6,13 +6,13 @@
   "license": "MIT",
   "author": "Aleksey Tarasenko <alekstar79@yandex.ru>",
   "private": false,
-  "homepage": "https://github.com/alekstar79/ksfr-cinema.git",
+  "homepage": "https://github.com/alekstar79/cinema.git",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alekstar79/ksfr-cinema.git"
+    "url": "git+https://github.com/alekstar79/cinema.git"
   },
   "bugs": {
-    "url": "https://github.com/alekstar79/ksfr-cinema/issues"
+    "url": "https://github.com/alekstar79/cinema/issues"
   },
   "scripts": {
     "build": "nuxt build",
