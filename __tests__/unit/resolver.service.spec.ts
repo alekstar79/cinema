@@ -8,14 +8,14 @@ describe('EntityResolver', () => {
 
   beforeEach(() => {
     mockStore = {
-      getEntity: vi.fn(),
+      getEntity: vi.fn().mockReturnValue(null),
       setEntity: vi.fn(),
     }
-    mockFetcher = vi.fn()
+    mockFetcher = vi.fn().mockResolvedValue({ name: 'resolved' })
     resolver = new EntityResolver(mockStore, mockFetcher)
   })
 
-  it('собирает все OID из объекта', async () => {
+  it('собирает все поддерживаемые OID из объекта и вызывает fetcher', async () => {
     const input = {
       movie: 'movie:123',
       genres: ['genre:1', 'genre:2'],
@@ -23,13 +23,8 @@ describe('EntityResolver', () => {
       ignore: 'not an oid',
     }
 
-    mockStore.getEntity.mockReturnValue(null)
-    mockFetcher.mockResolvedValue({ name: 'resolved' })
-
     await resolver.resolve(input)
 
-    // В текущей реализации SUPPORTED_TYPES = ['person','genre','label','country','studio']
-    // В тесте должны быть запрошены genre и label (movie игнорируется)
     expect(mockFetcher).toHaveBeenCalledTimes(3)
     expect(mockFetcher).toHaveBeenCalledWith('genre', '1')
     expect(mockFetcher).toHaveBeenCalledWith('genre', '2')
@@ -38,9 +33,7 @@ describe('EntityResolver', () => {
 
   it('использует кешированные сущности', async () => {
     const input = { genre: 'genre:1' }
-
     mockStore.getEntity.mockReturnValue({ oid: 'genre:1', name: 'Cached' })
-    mockFetcher.mockResolvedValue({ name: 'new' })
 
     const result = await resolver.resolve(input)
 
@@ -48,7 +41,7 @@ describe('EntityResolver', () => {
     expect(result).toEqual({ genre: { oid: 'genre:1', name: 'Cached' } })
   })
 
-  it('заменяет OID на объекты из кеша', async () => {
+  it('заменяет OID на объекты из кеша (включая массивы)', async () => {
     const input = {
       data: {
         genre: 'genre:1',
@@ -63,8 +56,6 @@ describe('EntityResolver', () => {
       if (oid === 'label:3') return { oid: 'label:3', name: 'Label3' }
       return null
     })
-
-    mockFetcher.mockResolvedValue(null) // не будет вызван
 
     const result = await resolver.resolve(input)
 
@@ -82,10 +73,6 @@ describe('EntityResolver', () => {
       movie: 'movie:123',
       asset: 'asset:456',
     }
-
-    mockStore.getEntity.mockReturnValue(null)
-    mockFetcher.mockResolvedValue({})
-
     await resolver.resolve(input)
 
     expect(mockFetcher).not.toHaveBeenCalled()

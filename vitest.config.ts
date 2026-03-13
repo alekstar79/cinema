@@ -7,6 +7,18 @@ export default defineConfig({
     environment: 'happy-dom',
     globals: true,
     setupFiles: './setup.ts',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'], // 'text' для вывода в консоль
+      reportsDirectory: './coverage',
+      exclude: [
+        'node_modules/**',
+        'tests/**',
+        '**/*.d.ts',
+        '**/*.config.{js,ts}',
+        '**/types/**',
+      ],
+    },
   },
   resolve: {
     alias: {
