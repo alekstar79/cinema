@@ -39,16 +39,16 @@ export default defineNuxtConfig({
     strict: true,
   },
   nitro: {
+    // Правило прокси полностью удалено, чтобы не конфликтовать с серверными обработчиками
     ...(isGenerate && {
       prerender: {
         crawlLinks: true,
         routes: ['/'],
-        // @ts-ignore
-        fallback: 'index.html',
+        fallback: '404.html',
       },
     })
   },
   experimental: {
-    payloadExtraction: false
+    payloadExtraction: true
   },
 })

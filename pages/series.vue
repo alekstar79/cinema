@@ -79,17 +79,11 @@ const router = useRouter()
 const showcaseStore = useShowcaseStore()
 const dictionaryStore = useDictionaryStore()
 
-await useAsyncData('showcase-data', async () => {
-  await showcaseStore.fetchMainPage()
-  return showcaseStore.data
-}, {
-  server: true,
-  lazy: false,
-})
+// ИСПОЛЬЗУЕМ УНИКАЛЬНЫЙ КЛЮЧ
+await useAsyncData('series-data', () => showcaseStore.fetchMainPage())
 
 const genres = computed(() => {
-  const entities = dictionaryStore.entities
-  return Object.values(entities).filter(
+  return Object.values(dictionaryStore.entities).filter(
     (value): value is Genre => value.oid?.startsWith('genre:')
   )
 })
@@ -102,7 +96,12 @@ const series = computed(() => allItems.value.filter(item => item.oid.startsWith(
 
 const page = ref(Number(route.query.page) || 1)
 const pageSize = 20
-const totalPages = computed(() => Math.ceil(series.value.length / pageSize))
+
+const totalPages = computed(() => {
+  if (!series.value) return 0
+  const total = Math.ceil(series.value.length / pageSize)
+  return isNaN(total) ? 0 : total
+})
 
 const filters = reactive({
   genre: (route.query.genre as string) || undefined,
@@ -123,7 +122,10 @@ const filteredItems = computed(() => {
   if (filters.genre) {
     result = result.filter((item) =>
       Array.isArray(item.genres) &&
-      item.genres.some((g) => typeof g === 'object' && (g as Genre).oid === filters.genre)
+      item.genres.some((g) => {
+        const genreOid = typeof g === 'string' ? g : (g as Genre).oid
+        return genreOid === filters.genre
+      })
     )
   }
 

@@ -1,6 +1,5 @@
-export default defineEventHandler(async (event) => {
-  const path = event.path.replace(/^\/api\//, '')
-  const target = `https://cms.test.ksfr.tech/api/v1/${path}`
-
-  return proxyRequest(event, target)
-})
+// This file is no longer needed as proxy is handled by routeRules in nuxt.config.ts
+// export default defineEventHandler(() => {
+  // Return an error or an empty response to ensure it's not used
+  // return new Response('This endpoint is deprecated. Proxy is handled by routeRules in nuxt.config.ts', { status: 410 })
+// })

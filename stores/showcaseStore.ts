@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Showcase } from '~/types/entities.types'
 import { useDictionaryStore } from './dictionaryStore'
-import { EntityResolver } from '~/services/resolver/entityResolver.service'
-import { createDictionariesApi } from '~/services/api/endpoints/dictionaries'
-import { createShowcaseApi } from '~/services/api/endpoints/showcase'
 
 interface ShowcaseState {
   data: Showcase | null
@@ -26,26 +23,24 @@ export const useShowcaseStore = defineStore('showcase', {
 
   actions: {
     async fetchMainPage() {
+      if (this.data) return this.data
+
       this.loading = true
       this.error = null
 
       try {
-        const config = useRuntimeConfig()
-        const clientBase = config.public.apiBaseUrl
-        const serverBase = process.env.API_BASE_URL || 'https://cms.test.ksfr.tech/api/v1'
-        const apiBase = import.meta.client ? clientBase : serverBase
-
-        const showcaseApi = createShowcaseApi(apiBase)
-        const rawData = await showcaseApi.getMainPage()
+        const response = await $fetch<any>('/api/main')
 
         const dictionaryStore = useDictionaryStore()
-        const dictionariesApi = createDictionariesApi(apiBase)
-        const resolver = new EntityResolver(dictionaryStore, dictionariesApi.getEntity)
+        dictionaryStore.setAllEntities(response.dictionaries)
+        this.data = response.showcase
+        
+        return this.data
 
-        this.data = await resolver.resolve(rawData)
       } catch (err) {
-        this.error = err instanceof Error ? err.message : 'Failed to load showcase'
+        this.error = err instanceof Error ? err.message : 'Failed to load data'
         console.error('Showcase fetch error:', err)
+        return null
       } finally {
         this.loading = false
       }

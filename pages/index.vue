@@ -5,22 +5,16 @@
         <h1 class="text-h4 mb-4">{{ showcaseName }}</h1>
       </v-col>
     </v-row>
-
-    <!-- Состояние загрузки -->
-    <v-row v-if="loading">
+    <v-row v-if="showcaseStore.loading && !showcaseStore.slides.length">
       <v-col v-for="n in 8" :key="n" cols="12" sm="6" md="4" lg="3" xl="2">
         <app-skeleton />
       </v-col>
     </v-row>
-
-    <!-- Состояние ошибки -->
-    <v-row v-else-if="error">
+    <v-row v-else-if="showcaseStore.error">
       <v-col cols="12">
-        <error-message :message="error" @retry="loadData" @close="error = null" />
+        <error-message :message="showcaseStore.error" @retry="showcaseStore.fetchMainPage" />
       </v-col>
     </v-row>
-
-    <!-- Сетка с контентом -->
     <v-row v-else>
       <v-col
         v-for="(slide, index) in slides"
@@ -41,21 +35,13 @@
 import { useShowcaseStore } from '~/stores/showcaseStore'
 import AppSkeleton from '~/components/ui/AppSkeleton.vue'
 import ErrorMessage from '~/components/ui/ErrorMessage.vue'
+import ContentCard from '~/components/content/ContentCard.vue'
 
 const showcaseStore = useShowcaseStore()
-const { slides, showcaseName, loading, error } = storeToRefs(showcaseStore)
 
-await useAsyncData('showcase', async () => {
-  await showcaseStore.fetchMainPage()
-  return showcaseStore.data
-}, {
-  server: true,
-  lazy: false,
-})
+await useAsyncData('index-data', () => showcaseStore.fetchMainPage())
 
-const loadData = () => {
-  showcaseStore.fetchMainPage()
-}
+const { slides, showcaseName } = storeToRefs(showcaseStore)
 
 useHead({
   title: computed(() => showcaseName.value || 'Главная'),

@@ -2,6 +2,9 @@ import { isOID, parseOID } from '~/utils/oid.parser'
 
 const SUPPORTED_TYPES = ['person', 'genre', 'label', 'country', 'studio']
 
+// Ограничение на количество одновременных запросов
+const CONCURRENCY_LIMIT = 5
+
 export class EntityResolver {
   constructor(
     private readonly dictionaryStore: any,
@@ -16,27 +19,50 @@ export class EntityResolver {
     for (const oid of oids) {
       const parsed = parseOID(oid)
 
-      if (!parsed) continue
-      if (!SUPPORTED_TYPES.includes(parsed.type)) continue
-      if (this.dictionaryStore.getEntity(oid)) continue
+      if (!parsed || !SUPPORTED_TYPES.includes(parsed.type) || this.dictionaryStore.getEntity(oid)) {
+        continue
+      }
 
       const list = grouped[parsed.type] || (grouped[parsed.type] = [])
       list.push(parsed.id)
     }
 
-    const promises = Object.entries(grouped)
-      .flatMap(([type, ids]) =>
-        ids.map(async (id) => {
-          try {
-            const data = await this.fetcher(type, id)
-            if (data) this.dictionaryStore.setEntity(`${type}:${id}`, data)
-          } catch (e) {
-            console.warn(`Failed to fetch ${type}:${id}`, e)
-          }
-        })
-    )
+    // Обрабатываем "person" отдельно и последовательно
+    if (grouped.person) {
+      for (const id of grouped.person) {
+        try {
+          const personData = await this.fetcher('person', id)
+          if (personData) this.dictionaryStore.setEntity(`person:${id}`, personData)
+        } catch (e) {
+          console.warn(`Failed to fetch person:${id}`, e)
+        }
+      }
 
-    await Promise.allSettled(promises)
+      delete grouped.person
+    }
+
+    // Обрабатываем остальные типы пакетами с ограничением
+    const promises: Promise<any>[] = []
+    for (const [type, ids] of Object.entries(grouped)) {
+      for (const id of ids) {
+        promises.push(
+          this.fetcher(type, id).then(data => {
+            if (data) {
+              this.dictionaryStore.setEntity(`${type}:${id}`, data)
+            }
+          }).catch(e => {
+            console.warn(`Failed to fetch ${type}:${id}`, e)
+          })
+        )
+      }
+    }
+
+    // Выполняем промисы пакетами (чанками)
+    for (let i = 0; i < promises.length; i += CONCURRENCY_LIMIT) {
+      const chunk = promises.slice(i, i + CONCURRENCY_LIMIT)
+      await Promise.allSettled(chunk)
+    }
+
     return this.replaceOIDs(data, this.dictionaryStore.getEntity.bind(this.dictionaryStore))
   }
 
