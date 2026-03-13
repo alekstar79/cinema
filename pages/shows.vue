@@ -48,11 +48,14 @@
             <v-alert type="info">Нет шоу для отображения</v-alert>
           </v-col>
         </v-row>
-        <v-pagination
-          v-model="page"
-          :length="totalPages"
-          class="mt-4"
-        />
+
+        <ClientOnly>
+          <v-pagination
+            v-model="page"
+            :length="totalPages"
+            class="mt-4"
+          />
+        </ClientOnly>
       </v-col>
     </v-row>
   </v-container>
@@ -66,35 +69,40 @@ import ContentCard from '~/components/content/ContentCard.vue'
 
 const route = useRoute()
 const router = useRouter()
-const showcaseStore = useShowcaseStore()
-const dictionaryStore = useDictionaryStore()
 
-const genres = computed(() => {
-  const allEntities = dictionaryStore.entities
-  const genreList: Genre[] = []
-  allEntities.forEach((value: any, key: string) => {
-    if (key.startsWith('genre:')) {
-      genreList.push(value)
-    }
-  })
-  return genreList
-})
+const { data: pageData } = await useAsyncData<{ shows: ContentItem[]; genres: Genre[] }>(
+  'shows-page',
+  async () => {
+    const showcaseStore = useShowcaseStore()
+    await showcaseStore.fetchMainPage()
+    const allItems = showcaseStore.slides.map((s) => s.title).filter(Boolean)
+    const shows = allItems.filter((item) => item.oid.startsWith('show:'))
 
-const allItems = computed<ContentItem[]>(() => {
-  return showcaseStore.slides.map(slide => slide.title).filter(Boolean)
-})
+    const dictionaryStore = useDictionaryStore()
+    const genres: Genre[] = []
+    dictionaryStore.entities.forEach((value: any, key: string) => {
+      if (key.startsWith('genre:')) {
+        genres.push(value)
+      }
+    })
 
-const shows = computed(() => allItems.value.filter(item => item.oid.startsWith('show:')))
+    return { shows, genres }
+  },
+  { server: true }
+)
+
+const shows = computed(() => pageData.value?.shows || [])
+const genres = computed(() => pageData.value?.genres || [])
 
 const page = ref(Number(route.query.page) || 1)
 const pageSize = 20
 const totalPages = computed(() => Math.ceil(shows.value.length / pageSize))
 
 const filters = reactive({
-  genre: route.query.genre as string || undefined,
+  genre: (route.query.genre as string) || undefined,
   year: route.query.year ? Number(route.query.year) : undefined,
 })
-const sort = ref(route.query.sort as string || '')
+const sort = ref((route.query.sort as string) || '')
 
 const sortOptions = [
   { title: 'По умолчанию', value: '' },
@@ -107,15 +115,14 @@ const filteredItems = computed(() => {
   let result = shows.value
 
   if (filters.genre) {
-    result = result.filter(item =>
-        Array.isArray(item.genres) && item.genres.some(g =>
-          typeof g === 'object' && (g as Genre).oid === filters.genre
-        )
+    result = result.filter((item) =>
+      Array.isArray(item.genres) &&
+      item.genres.some((g) => typeof g === 'object' && (g as Genre).oid === filters.genre)
     )
   }
 
   if (filters.year) {
-    result = result.filter(item => item.air_year === filters.year)
+    result = result.filter((item) => item.air_year === filters.year)
   }
 
   if (sort.value) {

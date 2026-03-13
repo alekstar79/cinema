@@ -18,10 +18,12 @@ export type DictionariesApi = {
 export const createDictionariesApi = (baseURL: string): DictionariesApi => ({
   async getEntity(type: string, id: string) {
     const endpoint = endpointMap[type]
+
     if (!endpoint) {
       console.warn(`Unsupported entity type: ${type}`)
       return null
     }
+
     let lastError
     for (let i = 0; i < 3; i++) {
       try {
@@ -31,6 +33,7 @@ export const createDictionariesApi = (baseURL: string): DictionariesApi => ({
         if (i < 2) await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)))
       }
     }
+
     throw lastError
-  },
+  }
 })

@@ -21,7 +21,7 @@
     "preview": "nuxt preview",
     "preview:static": "npx serve .output/public",
     "postinstall": "nuxt prepare",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
