@@ -11,23 +11,23 @@ export default defineNuxtConfig({
     baseURL: isGenerate ? '/cinema/' : '/'
   },
   build: {
-    transpile: ['vuetify'],
+    transpile: ['vuetify']
   },
   vite: {
     ssr: {
-      noExternal: ['vuetify'],
+      noExternal: ['vuetify']
     },
     build: {
       rollupOptions: {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              return 'vendor';
+              return 'vendor'
             }
-          },
-        },
-      },
-    },
+          }
+        }
+      }
+    }
   },
   runtimeConfig: {
     public: {
@@ -39,7 +39,6 @@ export default defineNuxtConfig({
     strict: true,
   },
   nitro: {
-    // Правило прокси полностью удалено, чтобы не конфликтовать с серверными обработчиками
     ...(isGenerate && {
       prerender: {
         crawlLinks: true,
@@ -47,8 +46,5 @@ export default defineNuxtConfig({
         fallback: '404.html',
       },
     })
-  },
-  experimental: {
-    payloadExtraction: true
-  },
+  }
 })

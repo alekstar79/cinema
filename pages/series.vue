@@ -79,7 +79,6 @@ const router = useRouter()
 const showcaseStore = useShowcaseStore()
 const dictionaryStore = useDictionaryStore()
 
-// ИСПОЛЬЗУЕМ УНИКАЛЬНЫЙ КЛЮЧ
 await useAsyncData('series-data', () => showcaseStore.fetchMainPage())
 
 const genres = computed(() => {
