@@ -11,29 +11,36 @@ const endpointMap: Record<string, string> = {
   reward: 'metadata/rewards',
 }
 
-export type DictionariesApi = {
-  getEntity(type: string, id: string): Promise<any>
-}
+// Кеш для списков справочников
+const listCache: Record<string, any[]> = {}
 
-export const createDictionariesApi = (baseURL: string): DictionariesApi => ({
+export const createDictionariesApi = (baseURL: string) => ({
   async getEntity(type: string, id: string) {
     const endpoint = endpointMap[type]
-
     if (!endpoint) {
       console.warn(`Unsupported entity type: ${type}`)
       return null
     }
 
-    let lastError
-    for (let i = 0; i < 3; i++) {
+    // Для person прямой запрос работает
+    if (type === 'person') {
       try {
         return await $fetch(`${baseURL}/${endpoint}/${id}/`)
-      } catch (e) {
-        lastError = e
-        if (i < 2) await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)))
+      } catch {
+        return null
       }
     }
 
-    throw lastError
-  }
+    // Для всех остальных типов сразу загружаем список (один раз) и ищем по oid
+    if (!listCache[type]) {
+      try {
+        listCache[type] = await $fetch(`${baseURL}/${endpoint}/`)
+      } catch {
+        return null
+      }
+    }
+
+    const found = listCache[type].find(item => item.oid === `${type}:${id}`)
+    return found || null
+  },
 })
