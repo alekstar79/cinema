@@ -1,17 +1,26 @@
 <template>
   <v-app-bar app>
-    <v-app-bar-title>Кинотеатр</v-app-bar-title>
-    <v-btn to="/" exact>Главная</v-btn>
-    <v-btn to="/movies">Фильмы</v-btn>
-    <v-btn to="/series">Сериалы</v-btn>
-    <v-btn to="/shows">Шоу</v-btn>
+    <v-app-bar-title class="text-h5 font-weight-bold">
+      🎬 Кинотеатр
+    </v-app-bar-title>
+
+    <v-btn to="/" exact class="nav-btn">Главная</v-btn>
+    <v-btn to="/movies" class="nav-btn">Фильмы</v-btn>
+    <v-btn to="/series" class="nav-btn">Сериалы</v-btn>
+    <v-btn to="/shows" class="nav-btn">Шоу</v-btn>
+
     <v-spacer />
+
     <v-text-field
       v-model="searchQuery"
       density="compact"
       variant="outlined"
       placeholder="Поиск"
       hide-details
+      prepend-inner-icon="mdi-magnify"
+      clearable
+      class="mx-4"
+      style="max-width: 300px;"
       @keyup.enter="search"
     />
   </v-app-bar>
@@ -27,3 +36,12 @@ const search = () => {
   }
 }
 </script>
+
+<style scoped>
+.nav-btn {
+  transition: transform 0.2s;
+}
+.nav-btn:hover {
+  transform: scale(1.05);
+}
+</style>

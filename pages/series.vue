@@ -3,9 +3,9 @@
     <h1 class="text-h4 mb-4">Сериалы</h1>
     <v-row>
       <v-col cols="12" md="3">
-        <v-card>
+        <v-card class="filter-card">
           <v-card-title>Фильтры</v-card-title>
-          <v-card-text>
+          <v-card-text class="filter-fields">
             <v-select
               v-model="filters.genre"
               :items="genres"

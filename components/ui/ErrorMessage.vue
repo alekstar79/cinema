@@ -3,12 +3,13 @@
     v-if="displayMessage"
     type="error"
     closable
+    prominent
     @click:close="$emit('close')"
   >
     <template v-slot:prepend>
-      <v-icon icon="mdi-alert-circle" />
+      <v-icon icon="mdi-alert-circle" size="large" />
     </template>
-    {{ displayMessage }}
+    <div class="text-body-1">{{ displayMessage }}</div>
     <template v-slot:append>
       <v-btn color="error" variant="text" @click="$emit('retry')">
         Повторить

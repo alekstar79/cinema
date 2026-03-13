@@ -1,6 +1,10 @@
 <template>
   <NuxtLink :to="content?.url" class="content-card-link">
-    <v-card class="content-card mx-auto" :loading="loading" variant="outlined">
+    <v-card
+      class="content-card mx-auto"
+      :loading="loading"
+      variant="outlined"
+    >
       <v-img
         :src="posterUrl"
         :lazy-src="placeholderImage"
@@ -41,7 +45,7 @@
             :key="label.oid"
             size="x-small"
             class="mr-1 mb-1"
-            color="secondary"
+            color="primary"
             variant="flat"
           >
             {{ label.name }}
@@ -105,17 +109,31 @@ const placeholderImage = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fww
   text-decoration: none;
   color: inherit;
   display: block;
+  height: 100%;
 }
+
 .content-card {
   max-width: 350px;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
 }
+
 .content-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+}
+
+/* Добавляем небольшие отступы внутри карточки */
+.v-card-title,
+.v-card-subtitle,
+.v-card-text {
+  padding-left: 12px;
+  padding-right: 12px;
 }
 </style>
