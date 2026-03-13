@@ -81,7 +81,7 @@ const dictionaryStore = useDictionaryStore()
 
 await useAsyncData('showcase-data', async () => {
   await showcaseStore.fetchMainPage()
-  return true
+  return showcaseStore.data
 }, {
   server: true,
   lazy: false,

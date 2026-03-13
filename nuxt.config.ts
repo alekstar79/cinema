@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
   modules: ['@pinia/nuxt'],
+  app: {
+    baseURL: isGenerate ? '/cinema/' : '/'
+  },
   build: {
     transpile: ['vuetify'],
   },
@@ -44,5 +47,8 @@ export default defineNuxtConfig({
         fallback: 'index.html',
       },
     })
-  }
+  },
+  experimental: {
+    payloadExtraction: false
+  },
 })

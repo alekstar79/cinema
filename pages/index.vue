@@ -47,7 +47,7 @@ const { slides, showcaseName, loading, error } = storeToRefs(showcaseStore)
 
 await useAsyncData('showcase', async () => {
   await showcaseStore.fetchMainPage()
-  return true
+  return showcaseStore.data
 }, {
   server: true,
   lazy: false,
