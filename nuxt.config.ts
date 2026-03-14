@@ -8,7 +8,16 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@pinia/nuxt'],
   app: {
-    baseURL: isGenerate ? '/cinema/' : '/'
+    baseURL: isGenerate ? '/cinema/' : '/',
+    head: {
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/favicon.png'
+        }
+      ]
+    }
   },
   build: {
     transpile: ['vuetify']
