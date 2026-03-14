@@ -1,6 +1,21 @@
 # Cinema (Nuxt 3 + TypeScript)
 
+[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+[![GitHub](https://img.shields.io/badge/github-repo-green.svg?style=flat)](https://github.com/alekstar79/cinema)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square)](https://www.typescriptlang.org)
+[![Coverage](https://img.shields.io/badge/coverage-97.08%25-brightgreen.svg)](https://github.com/alekstar79/video-player)
+[![Nuxt 4](https://img.shields.io/badge/Nuxt%204-4FC08D?style=flat&logo=vuedotjs&logoColor=white)](https://nuxt.com)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
+
 Cinema is a Nuxt 3 web application for browsing a catalog of **movies**, **series**, and **shows**. The app consumes an upstream CMS API and exposes a small internal API (`/api/main`, `/api/content/:type/:id`) that:
+
+- fetches showcase content and related dictionaries
+- resolves OID references (e.g. `genre:123`, `person:456`) into full objects
+- returns a payload that is friendly for SSR/SSG hydration
+
+The project is designed to work in **SSR**, **SSG**, and **SPA** modes, with a special focus on **static generation for GitHub Pages**.
+
+---
 
 <!-- TOC -->
 * [Cinema (Nuxt 3 + TypeScript)](#cinema-nuxt-3--typescript)
@@ -24,12 +39,6 @@ Cinema is a Nuxt 3 web application for browsing a catalog of **movies**, **serie
   * [Development guidelines](#development-guidelines)
   * [License](#license)
 <!-- TOC -->
-
-- fetches showcase content and related dictionaries
-- resolves OID references (e.g. `genre:123`, `person:456`) into full objects
-- returns a payload that is friendly for SSR/SSG hydration
-
-The project is designed to work in **SSR**, **SSG**, and **SPA** modes, with a special focus on **static generation for GitHub Pages**.
 
 ---
 
