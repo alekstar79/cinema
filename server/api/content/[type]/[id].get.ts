@@ -20,6 +20,15 @@ const createResolverFetcher = (apiBase: string) => {
   }
 }
 
+/**
+ * GET `/api/content/:type/:id`
+ *
+ * Server-side endpoint that fetches a content item from the upstream API and
+ * resolves OID references (genres, labels, persons, etc.) into full objects.
+ *
+ * The resolver uses a per-request in-memory dictionary to avoid cross-request
+ * data leaks while still enabling deep OID replacement.
+ */
 const handler: EventHandler = defineEventHandler(async (event: H3Event) => {
   const { type, id } = event.context.params || {}
 

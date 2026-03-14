@@ -94,12 +94,6 @@ watchEffect(() => {
   }
 })
 
-onMounted(() => {
-  if (!Object.keys(dictionaryStore.entities).length) {
-    showcaseStore.fetchMainPage()
-  }
-})
-
 const genres = computed(() => dictionaryStore.getEntitiesByType('genre'))
 
 const allItems = computed<ContentItem[]>(() => {

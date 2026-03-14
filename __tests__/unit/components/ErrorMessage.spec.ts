@@ -3,22 +3,22 @@ import { describe, it, expect } from 'vitest'
 import ErrorMessage from '~/components/ui/ErrorMessage.vue'
 
 describe('ErrorMessage', () => {
-  it('рендерит сообщение об ошибке', () => {
+  it('renders the provided error message', () => {
     const wrapper = mount(ErrorMessage, {
-      props: { message: 'Ошибка загрузки' },
+      props: { message: 'Loading failed' },
     })
-    expect(wrapper.text()).toContain('Ошибка загрузки')
+    expect(wrapper.text()).toContain('Loading failed')
     expect(wrapper.find('button').exists()).toBe(true)
   })
 
-  it('если message null, показывает дефолтное сообщение', () => {
+  it('shows a default message when message is null', () => {
     const wrapper = mount(ErrorMessage, {
       props: { message: null },
     })
-    expect(wrapper.text()).toContain('Произошла неизвестная ошибка')
+    expect(wrapper.text()).toContain('An unknown error occurred')
   })
 
-  it('испускает событие retry при клике на кнопку', async () => {
+  it('emits retry when the button is clicked', async () => {
     const wrapper = mount(ErrorMessage, {
       props: { message: 'Error' },
     })
@@ -28,18 +28,18 @@ describe('ErrorMessage', () => {
     expect(wrapper.emitted('retry')).toBeTruthy()
   })
 
-  it('испускает событие close при событии click:close алерта', async () => {
+  it('emits close on the alert click:close event', async () => {
     const wrapper = mount(ErrorMessage, {
       props: { message: 'Error' },
     })
 
     const alert = wrapper.findComponent({ name: 'VAlert' })
-    // happy-dom/стабы Vuetify могут не иметь имени компонента, поэтому дополнительно проверим на существование
+    // happy-dom / Vuetify stubs may not expose component names consistently.
     if (alert.exists()) {
       await alert.vm.$emit('click:close')
       expect(wrapper.emitted('close')).toBeTruthy()
     } else {
-      // fallback: напрямую эмитим событие на корневом компоненте
+      // Fallback: emit on the root wrapper.
       await wrapper.vm.$emit('click:close')
       expect(wrapper.emitted('close')).toBeTruthy()
     }

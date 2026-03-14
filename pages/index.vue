@@ -59,6 +59,6 @@ watchEffect(() => {
 const { slides, showcaseName } = storeToRefs(showcaseStore)
 
 useHead({
-  title: computed(() => showcaseName.value || 'Главная'),
+  title: computed(() => showcaseName.value || 'Home'),
 })
 </script>

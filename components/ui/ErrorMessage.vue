@@ -31,6 +31,6 @@ defineEmits<{
 }>()
 
 const displayMessage = computed(() => {
-  return props.message || 'Произошла неизвестная ошибка'
+  return props.message || 'An unknown error occurred'
 })
 </script>

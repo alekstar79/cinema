@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { parseOID, isOID } from '~/utils/oid.parser'
 
 describe('oid.parser', () => {
-  it('parseOID корректно разбирает строку', () => {
+  it('parseOID parses a valid OID string', () => {
     expect(parseOID('genre:123')).toEqual({ type: 'genre', id: '123' })
     expect(parseOID('movie:abc-123_xyz')).toEqual({ type: 'movie', id: 'abc-123_xyz' })
   })
 
-  it('parseOID возвращает null для некорректных строк', () => {
+  it('parseOID returns null for invalid strings', () => {
     expect(parseOID('')).toBeNull()
     expect(parseOID('genre')).toBeNull()
     expect(parseOID('genre:')).toBeNull()
@@ -15,7 +15,7 @@ describe('oid.parser', () => {
     expect(parseOID('123')).toBeNull()
   })
 
-  it('isOID корректно определяет OID', () => {
+  it('isOID correctly detects OID-like strings', () => {
     expect(isOID('genre:123')).toBe(true)
     expect(isOID('movie:abc')).toBe(true)
     expect(isOID('')).toBe(false)

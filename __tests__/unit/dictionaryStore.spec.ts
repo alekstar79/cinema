@@ -7,28 +7,28 @@ describe('dictionaryStore', () => {
     setActivePinia(createPinia())
   })
 
-  it('setEntity и getEntity работают', () => {
+  it('setEntity and getEntity work as expected', () => {
     const store = useDictionaryStore()
     const entity = { oid: 'genre:1', name: 'Test' }
 
     store.setEntity('genre:1', entity)
-    expect(store.getEntity('genre:1')).toStrictEqual(entity) // замена toBe на toStrictEqual
+    expect(store.getEntity('genre:1')).toStrictEqual(entity) // Use deep equality for objects.
     expect(store.getEntity('unknown')).toBeUndefined()
   })
 
-  it('clear очищает хранилище', () => {
+  it('clear resets the store state', () => {
     const store = useDictionaryStore()
     store.setEntity('genre:1', {})
     store.clear()
     expect(store.getEntity('genre:1')).toBeUndefined()
   })
 
-  it('getEntitiesByType возвращает только сущности нужного типа', () => {
+  it('getEntitiesByType returns only entities of the requested type', () => {
     const store = useDictionaryStore()
 
-    store.setEntity('genre:1', { oid: 'genre:1', name: 'Жанр 1' })
-    store.setEntity('genre:2', { oid: 'genre:2', name: 'Жанр 2' })
-    store.setEntity('label:1', { oid: 'label:1', name: 'Метка' })
+    store.setEntity('genre:1', { oid: 'genre:1', name: 'Genre 1' })
+    store.setEntity('genre:2', { oid: 'genre:2', name: 'Genre 2' })
+    store.setEntity('label:1', { oid: 'label:1', name: 'Label' })
 
     const genres = store.getEntitiesByType('genre')
     const labels = store.getEntitiesByType('label')
@@ -39,18 +39,18 @@ describe('dictionaryStore', () => {
     expect(labels[0].oid).toBe('label:1')
   })
 
-  it('setAllEntities мержит сущности с существующим состоянием', () => {
+  it('setAllEntities merges entities into the existing state', () => {
     const store = useDictionaryStore()
 
-    store.setEntity('genre:1', { oid: 'genre:1', name: 'Жанр 1' })
+    store.setEntity('genre:1', { oid: 'genre:1', name: 'Genre 1' })
 
     store.setAllEntities({
-      'genre:2': { oid: 'genre:2', name: 'Жанр 2' },
-      'label:1': { oid: 'label:1', name: 'Метка' }
+      'genre:2': { oid: 'genre:2', name: 'Genre 2' },
+      'label:1': { oid: 'label:1', name: 'Label' }
     })
 
-    expect(store.getEntity('genre:1')).toEqual({ oid: 'genre:1', name: 'Жанр 1' })
-    expect(store.getEntity('genre:2')).toEqual({ oid: 'genre:2', name: 'Жанр 2' })
-    expect(store.getEntity('label:1')).toEqual({ oid: 'label:1', name: 'Метка' })
+    expect(store.getEntity('genre:1')).toEqual({ oid: 'genre:1', name: 'Genre 1' })
+    expect(store.getEntity('genre:2')).toEqual({ oid: 'genre:2', name: 'Genre 2' })
+    expect(store.getEntity('label:1')).toEqual({ oid: 'label:1', name: 'Label' })
   })
 })

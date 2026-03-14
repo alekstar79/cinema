@@ -15,7 +15,7 @@ describe('EntityResolver', () => {
     resolver = new EntityResolver(mockStore, mockFetcher)
   })
 
-  it('собирает все поддерживаемые OID из объекта и вызывает fetcher', async () => {
+  it('collects supported OIDs and calls fetcher for missing entities', async () => {
     const input = {
       movie: 'movie:123',
       genres: ['genre:1', 'genre:2'],
@@ -31,7 +31,7 @@ describe('EntityResolver', () => {
     expect(mockFetcher).toHaveBeenCalledWith('label', '5')
   })
 
-  it('использует кешированные сущности', async () => {
+  it('uses cached entities from the dictionary store', async () => {
     const input = { genre: 'genre:1' }
     mockStore.getEntity.mockReturnValue({ oid: 'genre:1', name: 'Cached' })
 
@@ -41,7 +41,7 @@ describe('EntityResolver', () => {
     expect(result).toEqual({ genre: { oid: 'genre:1', name: 'Cached' } })
   })
 
-  it('заменяет OID на объекты из кеша (включая массивы)', async () => {
+  it('replaces OIDs with cached objects (including arrays)', async () => {
     const input = {
       data: {
         genre: 'genre:1',
@@ -68,7 +68,7 @@ describe('EntityResolver', () => {
     })
   })
 
-  it('не резолвит неподдерживаемые типы', async () => {
+  it('does not resolve unsupported types', async () => {
     const input = {
       movie: 'movie:123',
       asset: 'asset:456',
@@ -78,7 +78,7 @@ describe('EntityResolver', () => {
     expect(mockFetcher).not.toHaveBeenCalled()
   })
 
-  it('обрабатывает ошибки при загрузке person и других типов', async () => {
+  it('handles fetch errors for person and other entity types', async () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const store = {
@@ -108,7 +108,7 @@ describe('EntityResolver', () => {
     warnSpy.mockRestore()
   })
 
-  it('загружает и сохраняет person сущности при успешном ответе', async () => {
+  it('loads and stores person entities on a successful response', async () => {
     const store = {
       getEntity: vi.fn().mockReturnValue(null),
       setEntity: vi.fn(),
@@ -128,7 +128,7 @@ describe('EntityResolver', () => {
     expect(store.setEntity).toHaveBeenCalledWith('person:1', { oid: 'person:1', name: 'Person 1' })
   })
 
-  it('replaceOIDs корректно обрабатывает массивы с объектами и примитивами', () => {
+  it('replaceOIDs correctly handles arrays with objects and primitives', () => {
     const getEntity = (oid: string) => ({ oid, name: 'Entity ' + oid })
     const input = [
       'genre:1',
@@ -136,7 +136,7 @@ describe('EntityResolver', () => {
       42,
     ]
 
-    // @ts-expect-error доступ к приватному методу для теста покрытия
+    // @ts-expect-error calling a private method for coverage
     const result = (resolver as any).replaceOIDs(input, getEntity)
 
     expect(result[0]).toEqual({ oid: 'genre:1', name: 'Entity genre:1' })

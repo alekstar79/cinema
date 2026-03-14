@@ -19,6 +19,17 @@ const createResolverFetcher = (apiBase: string) => {
   }
 }
 
+/**
+ * GET `/api/main`
+ *
+ * Server-side endpoint that aggregates the main page payload:
+ * - Fetches the main showcase document from the upstream API
+ * - Fetches dictionary lists (genres, labels, countries, studios)
+ * - Resolves OID references inside the showcase via `EntityResolver`
+ * - Returns `{ showcase, dictionaries }`
+ *
+ * The result is cached in-memory to reduce upstream load during SSR/SSG.
+ */
 export default defineEventHandler(async () => {
   if (cachedData) {
     return cachedData
@@ -47,7 +58,7 @@ export default defineEventHandler(async () => {
 
     const processDictionary = (response: any) => {
       const list = Array.isArray(response?.results) ? response.results : Array.isArray(response) ? response : []
-      list.forEach(item => tempDictionary.setEntity(item.oid, item))
+      list.forEach((item: any) => tempDictionary.setEntity(item.oid, item))
     }
 
     processDictionary(genresResponse)

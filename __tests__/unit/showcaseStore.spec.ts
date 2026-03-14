@@ -9,17 +9,17 @@ describe('showcaseStore', () => {
     vi.clearAllMocks()
   })
 
-  it('fetchMainPage загружает и резолвит данные', async () => {
+  it('fetchMainPage loads and stores main page data', async () => {
     const mockResponse = {
       showcase: {
         oid: 'showcase:1',
-        name: 'Главная',
+        name: 'Home',
         slides: [
           {
             oid: 'slide:1',
             title: {
               oid: 'movie:1',
-              title: 'Фильм',
+              title: 'Movie',
               genres: ['genre:1'],
               labels: [],
               assets: [],
@@ -28,12 +28,12 @@ describe('showcaseStore', () => {
         ],
       },
       dictionaries: {
-        'genre:1': { oid: 'genre:1', name: 'Жанр' }
+        'genre:1': { oid: 'genre:1', name: 'Genre' }
       }
     }
 
     const mockFetch = vi.fn().mockResolvedValue(mockResponse)
-    // @ts-expect-error: глобальный мок для Nuxt $fetch
+    // @ts-expect-error: global mock for Nuxt $fetch
     vi.stubGlobal('$fetch', mockFetch)
 
     const store = useShowcaseStore()
@@ -42,18 +42,18 @@ describe('showcaseStore', () => {
     expect(mockFetch).toHaveBeenCalledWith('/api/main')
     expect(store.data).toBeDefined()
     expect(store.slides).toHaveLength(1)
-    expect(store.showcaseName).toBe('Главная')
+    expect(store.showcaseName).toBe('Home')
     expect(store.loading).toBe(false)
     expect(store.error).toBeNull()
 
     vi.unstubAllGlobals()
   })
 
-  it('fetchMainPage обрабатывает ошибку', async () => {
+  it('fetchMainPage handles an error', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     const mockFetch = vi.fn().mockRejectedValue(new Error('Network error'))
-    // @ts-expect-error: глобальный мок для Nuxt $fetch
+    // @ts-expect-error: global mock for Nuxt $fetch
     vi.stubGlobal('$fetch', mockFetch)
 
     const store = useShowcaseStore()
@@ -67,30 +67,30 @@ describe('showcaseStore', () => {
     vi.unstubAllGlobals()
   })
 
-  it('fetchMainPage возвращает кешированные данные без повторного запроса', async () => {
+  it('fetchMainPage returns cached data without a second request', async () => {
     const mockResponse = {
       showcase: {
         oid: 'showcase:1',
-        name: 'Главная',
+        name: 'Home',
         slides: [],
       },
       dictionaries: {
-        'genre:1': { oid: 'genre:1', name: 'Жанр' }
+        'genre:1': { oid: 'genre:1', name: 'Genre' }
       }
     }
 
     const mockFetch = vi.fn().mockResolvedValue(mockResponse)
-    // @ts-expect-error: глобальный мок для Nuxt $fetch
+    // @ts-expect-error: global mock for Nuxt $fetch
     vi.stubGlobal('$fetch', mockFetch)
 
     const store = useShowcaseStore()
     const dictionaryStore = useDictionaryStore()
 
-    // Первый вызов — загружаем данные
+    // First call: loads data.
     await store.fetchMainPage()
     expect(mockFetch).toHaveBeenCalledTimes(1)
 
-    // Второй вызов — должны получить кеш и не ходить в сеть
+    // Second call: should return cached data without another request.
     const cached = await store.fetchMainPage()
     expect(mockFetch).toHaveBeenCalledTimes(1)
     expect(cached).toEqual({
@@ -101,7 +101,7 @@ describe('showcaseStore', () => {
     vi.unstubAllGlobals()
   })
 
-  it('slides и collections работают при пустом и заполненном состоянии', () => {
+  it('slides and collections getters work for empty and populated state', () => {
     const store = useShowcaseStore()
 
     expect(store.slides).toEqual([])
@@ -109,16 +109,16 @@ describe('showcaseStore', () => {
     expect(store.showcaseName).toBe('')
 
     const showcase: any = {
-      name: 'Главная витрина',
+      name: 'Home showcase',
       slides: [{ oid: 'slide:1' }],
       collections: [{ oid: 'collection:1' }]
     }
 
-    // @ts-expect-error прямое присвоение для теста геттеров
+    // @ts-expect-error direct assignment for getters test
     store.data = showcase
 
     expect(store.slides).toEqual(showcase.slides)
     expect(store.collections).toEqual(showcase.collections)
-    expect(store.showcaseName).toBe('Главная витрина')
+    expect(store.showcaseName).toBe('Home showcase')
   })
 })

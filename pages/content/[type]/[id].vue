@@ -90,6 +90,6 @@ const participants = computed(() => (content.value as any)?.participants || [])
 const formatJob = (job: any): string => (typeof job === 'object' && job.name) ? job.name : String(job || '')
 
 useHead({
-  title: computed(() => content.value?.title || 'Загрузка...')
+  title: computed(() => content.value?.title || 'Loading…')
 })
 </script>

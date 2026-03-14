@@ -11,9 +11,18 @@ const endpointMap: Record<string, string> = {
   reward: 'metadata/rewards',
 }
 
-// Кеш для списков справочников
+/**
+ * In-memory cache for dictionary list endpoints.
+ * Used to avoid refetching full lists for non-person entities.
+ */
 const listCache: Record<string, any[]> = {}
 
+/**
+ * Creates a small dictionaries API client.
+ *
+ * Note: for most entity types the upstream provides list endpoints, so we fetch
+ * the full list once and then resolve items by `oid`.
+ */
 export const createDictionariesApi = (baseURL: string) => ({
   async getEntity(type: string, id: string) {
     const endpoint = endpointMap[type]
@@ -22,7 +31,7 @@ export const createDictionariesApi = (baseURL: string) => ({
       return null
     }
 
-    // Для person прямой запрос работает
+    // For `person` a direct entity request works reliably.
     if (type === 'person') {
       try {
         return await $fetch(`${baseURL}/${endpoint}/${id}/`)
@@ -31,7 +40,7 @@ export const createDictionariesApi = (baseURL: string) => ({
       }
     }
 
-    // Для всех остальных типов сразу загружаем список (один раз) и ищем по oid
+    // For all other types, fetch the list once and resolve by `oid`.
     if (!listCache[type]) {
       try {
         listCache[type] = await $fetch(`${baseURL}/${endpoint}/`)

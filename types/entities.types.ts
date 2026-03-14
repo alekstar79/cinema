@@ -22,7 +22,8 @@ export interface ContentItem extends BaseEntity {
   title: string;
   synopsis: string;
   age: number;
-  genres: OID[] | Genre[]; // после резолвинга заменяется на объекты
+  /** After resolving, OID strings may be replaced by full `Genre` objects. */
+  genres: OID[] | Genre[];
   labels: OID[] | Label[];
   assets: Asset[];
   url: string;

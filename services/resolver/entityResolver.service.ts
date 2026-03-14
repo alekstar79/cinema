@@ -2,15 +2,28 @@ import { isOID, parseOID } from '~/utils/oid.parser'
 
 const SUPPORTED_TYPES = ['person', 'genre', 'label', 'country', 'studio']
 
-// Ограничение на количество одновременных запросов
+/** Maximum number of concurrent upstream requests during resolving. */
 const CONCURRENCY_LIMIT = 5
 
+/**
+ * Resolves OID references (e.g. `genre:123`) into full entity objects.
+ *
+ * The resolver:
+ * - collects OIDs from an arbitrary object graph (arrays + nested objects)
+ * - fetches missing supported entities via provided `fetcher`
+ * - stores fetched entities in `dictionaryStore`
+ * - replaces OID strings with resolved objects from the dictionary
+ */
 export class EntityResolver {
   constructor(
     private readonly dictionaryStore: any,
     private readonly fetcher: (type: string, id: string) => Promise<any>
   ) {}
 
+  /**
+   * Resolves OID references inside the given data structure.
+   * Returns the same shape as input, with OID strings replaced where possible.
+   */
   async resolve<T extends object>(data: T): Promise<T> {
     const oids = this.collectOIDs(data)
     if (oids.size === 0) return data
@@ -27,7 +40,7 @@ export class EntityResolver {
       list.push(parsed.id)
     }
 
-    // Обрабатываем "person" отдельно и последовательно
+    // Resolve `person` sequentially to reduce upstream load/limits risk.
     if (grouped.person) {
       for (const id of grouped.person) {
         try {
@@ -41,7 +54,7 @@ export class EntityResolver {
       delete grouped.person
     }
 
-    // Обрабатываем остальные типы пакетами с ограничением
+    // Resolve other types with a concurrency limit.
     const promises: Promise<any>[] = []
     for (const [type, ids] of Object.entries(grouped)) {
       for (const id of ids) {
@@ -57,7 +70,7 @@ export class EntityResolver {
       }
     }
 
-    // Выполняем промисы пакетами (чанками)
+    // Execute promises in chunks to enforce concurrency cap.
     for (let i = 0; i < promises.length; i += CONCURRENCY_LIMIT) {
       const chunk = promises.slice(i, i + CONCURRENCY_LIMIT)
       await Promise.allSettled(chunk)

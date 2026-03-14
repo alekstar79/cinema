@@ -9,7 +9,7 @@ export default defineConfig({
     setupFiles: './setup.ts',
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'], // 'text' для вывода в консоль
+      reporter: ['text', 'json', 'html'], // 'text' prints summary to stdout
       reportsDirectory: './coverage',
       exclude: [
         'node_modules/**',

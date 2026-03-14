@@ -5,6 +5,10 @@ export interface ParsedOID {
 
 const OID_REGEX = /^[a-zA-Z]+:[a-zA-Z0-9_-]+$/
 
+/**
+ * Parses an OID string (e.g. `genre:123`) into `{ type, id }`.
+ * Returns `null` for invalid inputs.
+ */
 export function parseOID(oid: any): ParsedOID | null {
   if (!oid || typeof oid !== 'string') return null
   if (!OID_REGEX.test(oid)) return null
@@ -16,6 +20,9 @@ export function parseOID(oid: any): ParsedOID | null {
   return { type, id }
 }
 
+/**
+ * Type guard that checks whether a value looks like a valid OID string.
+ */
 export function isOID(value: any): value is string {
   return typeof value === 'string' && OID_REGEX.test(value)
 }

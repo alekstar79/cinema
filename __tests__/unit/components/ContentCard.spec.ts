@@ -11,29 +11,29 @@ const router = createRouter({
 describe('ContentCard', () => {
   const mockContent = {
     oid: 'movie:123',
-    title: 'Тестовый фильм',
-    synopsis: 'Краткое описание.',
+    title: 'Test movie',
+    synopsis: 'Short description.',
     age: 12,
-    genres: [{ oid: 'genre:1', name: 'Драма' }],
-    labels: [{ oid: 'label:2', name: 'Хит' }],
+    genres: [{ oid: 'genre:1', name: 'Drama' }],
+    labels: [{ oid: 'label:2', name: 'Hit' }],
     assets: [{ oid: 'asset:1', asset_type: 'Poster' as const, resize_url: 'https://i.test/{w}x{h}/poster.jpg' }],
     url: '/content/movies/123',
   }
 
-  it('рендерит название, синопсис, жанры и метки', () => {
+  it('renders title, synopsis, genres, and labels', () => {
     const wrapper = mount(ContentCard, {
       props: { content: mockContent },
       global: { plugins: [router] },
     })
 
-    expect(wrapper.text()).toContain('Тестовый фильм')
-    expect(wrapper.text()).toContain('Краткое описание.')
-    expect(wrapper.text()).toContain('Драма')
-    expect(wrapper.text()).toContain('Хит')
+    expect(wrapper.text()).toContain('Test movie')
+    expect(wrapper.text()).toContain('Short description.')
+    expect(wrapper.text()).toContain('Drama')
+    expect(wrapper.text()).toContain('Hit')
   })
 
-  it('обрезает длинный синопсис', () => {
-    const longSynopsis = 'а'.repeat(150)
+  it('truncates a long synopsis', () => {
+    const longSynopsis = 'a'.repeat(150)
     const content = { ...mockContent, synopsis: longSynopsis }
     const wrapper = mount(ContentCard, {
       props: { content },
@@ -44,7 +44,7 @@ describe('ContentCard', () => {
     expect(text).toContain('…')
   })
 
-  it('показывает заглушку если нет постера', () => {
+  it('renders without poster when no poster asset exists', () => {
     const contentNoPoster = { ...mockContent, assets: [] }
     const wrapper = mount(ContentCard, {
       props: { content: contentNoPoster },
@@ -56,7 +56,7 @@ describe('ContentCard', () => {
     expect(img.attributes('src')).toBeUndefined()
   })
 
-  it('содержит ссылку на правильный URL', () => {
+  it('links to the expected URL', () => {
     const wrapper = mount(ContentCard, {
       props: { content: mockContent },
       global: { plugins: [router] },
@@ -67,7 +67,7 @@ describe('ContentCard', () => {
     expect(nuxtLink.props('to')).toBe('/content/movies/123')
   })
 
-  it('передаёт placeholder-изображение через lazy-src', () => {
+  it('passes an SVG placeholder via lazy-src', () => {
     const wrapper = mount(ContentCard, {
       props: { content: mockContent },
       global: { plugins: [router] },

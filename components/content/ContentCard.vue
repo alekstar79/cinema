@@ -129,7 +129,7 @@ const placeholderImage = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fww
   box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
 }
 
-/* Добавляем небольшие отступы внутри карточки */
+/* Add a bit of inner spacing inside the card content blocks. */
 .v-card-title,
 .v-card-subtitle,
 .v-card-text {
