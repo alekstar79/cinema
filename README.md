@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 [![GitHub](https://img.shields.io/badge/github-repo-green.svg?style=flat)](https://github.com/alekstar79/cinema)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square)](https://www.typescriptlang.org)
-[![Coverage](https://img.shields.io/badge/coverage-97.08%25-brightgreen.svg)](https://github.com/alekstar79/video-player)
+[![Coverage](https://img.shields.io/badge/coverage-97.08%25-brightgreen.svg)](https://github.com/alekstar79/cinema)
 [![Nuxt 4](https://img.shields.io/badge/Nuxt-4.x-00C58E?style=flat&logo=nuxt.js&logoColor=white)](https://nuxt.com)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
 
