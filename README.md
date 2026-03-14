@@ -2,6 +2,29 @@
 
 Cinema is a Nuxt 3 web application for browsing a catalog of **movies**, **series**, and **shows**. The app consumes an upstream CMS API and exposes a small internal API (`/api/main`, `/api/content/:type/:id`) that:
 
+<!-- TOC -->
+* [Cinema (Nuxt 3 + TypeScript)](#cinema-nuxt-3--typescript)
+  * [Tech stack](#tech-stack)
+  * [Features](#features)
+  * [Project structure (high level)](#project-structure-high-level)
+  * [Configuration notes](#configuration-notes)
+    * [Base URL for GitHub Pages](#base-url-for-github-pages)
+    * [Favicon](#favicon)
+  * [Data model: OID references](#data-model-oid-references)
+  * [Data flow (SSR/SSG-friendly)](#data-flow-ssrssg-friendly)
+    * [1) Server endpoints](#1-server-endpoints)
+    * [2) Pinia stores](#2-pinia-stores)
+    * [3) Pages](#3-pages)
+  * [Runtime modes](#runtime-modes)
+    * [Development](#development)
+    * [SSR build & preview](#ssr-build--preview)
+    * [Static generation (SSG)](#static-generation-ssg)
+  * [Static hosting constraints](#static-hosting-constraints)
+  * [Testing](#testing)
+  * [Development guidelines](#development-guidelines)
+  * [License](#license)
+<!-- TOC -->
+
 - fetches showcase content and related dictionaries
 - resolves OID references (e.g. `genre:123`, `person:456`) into full objects
 - returns a payload that is friendly for SSR/SSG hydration
@@ -139,20 +162,7 @@ yarn preview
 
 ---
 
-## GitHub Pages deployment
-
-The project is configured to work under a subpath (repository pages), e.g.:
-
-- `https://alekstar79.github.io/cinema/`
-
-Key points:
-
-- `nuxt.config.ts` switches `app.baseURL` to `/cinema/` when running `generate`
-- Nitro prerender is enabled for generation (`nitro.prerender`)
-- Make sure you deploy **only** the generated static output:
-  - `.output/public/`
-
-### Important: static hosting constraints
+## Static hosting constraints
 
 GitHub Pages is a **static** host. It cannot run Nitro server endpoints in production. That means:
 
