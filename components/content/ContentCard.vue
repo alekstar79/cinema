@@ -1,61 +1,64 @@
 <template>
   <NuxtLink :to="content?.url" class="content-card-link">
     <v-card
-      class="content-card mx-auto"
+      class="content-card"
       :loading="loading"
       variant="outlined"
     >
-      <v-img
-        :src="posterUrl"
-        :lazy-src="placeholderImage"
-        height="200"
-        cover
-        class="align-end"
-      >
-        <template v-slot:placeholder>
-          <v-skeleton-loader type="image" />
-        </template>
-      </v-img>
+      <div class="card-image-container">
+        <v-img
+          :src="posterUrl"
+          :lazy-src="placeholderImage"
+          cover
+          class="fill-height"
+        >
+          <template v-slot:placeholder>
+            <v-skeleton-loader type="image" class="fill-height" />
+          </template>
+        </v-img>
+      </div>
 
-      <v-card-title class="text-subtitle-1 font-weight-bold">
-        {{ content?.title }}
-      </v-card-title>
+      <div class="card-content-wrapper">
+        <v-card-title class="text-subtitle-1 font-weight-bold">
+          {{ content?.title }}
+        </v-card-title>
 
-      <v-card-subtitle class="text-caption">
-        {{ truncatedSynopsis }}
-      </v-card-subtitle>
+        <v-card-subtitle class="text-caption">
+          {{ truncatedSynopsis }}
+        </v-card-subtitle>
 
-      <v-card-text>
-        <div v-if="resolvedGenres.length" class="mb-2">
-          <v-chip
-            v-for="genre in resolvedGenres"
-            :key="genre.oid"
-            size="x-small"
-            class="mr-1 mb-1"
-            color="primary"
-            variant="outlined"
-          >
-            {{ genre.name }}
-          </v-chip>
-        </div>
+        <v-card-text>
+          <div v-if="resolvedGenres.length" class="mb-2">
+            <v-chip
+              v-for="genre in resolvedGenres"
+              :key="genre.oid"
+              size="x-small"
+              class="mr-1 mb-1"
+              color="primary"
+              variant="outlined"
+            >
+              {{ genre.name }}
+            </v-chip>
+          </div>
 
-        <div v-if="resolvedLabels.length">
-          <v-chip
-            v-for="label in resolvedLabels"
-            :key="label.oid"
-            size="x-small"
-            class="mr-1 mb-1"
-            color="primary"
-            variant="flat"
-          >
-            {{ label.name }}
-          </v-chip>
-        </div>
+          <div v-if="resolvedLabels.length">
+            <v-chip
+              v-for="label in resolvedLabels"
+              :key="label.oid"
+              size="x-small"
+              class="mr-1 mb-1"
+              color="primary"
+              variant="flat"
+            >
+              {{ label.name }}
+            </v-chip>
+          </div>
 
-        <div v-if="!resolvedGenres.length && !resolvedLabels.length" class="text-caption text-medium-emphasis">
-          Нет жанров и меток
-        </div>
-      </v-card-text>
+          <div v-if="!resolvedGenres.length && !resolvedLabels.length" class="text-caption text-medium-emphasis">
+            Нет жанров и меток
+          </div>
+        </v-card-text>
+      </div>
     </v-card>
   </NuxtLink>
 </template>
@@ -113,7 +116,6 @@ const placeholderImage = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fww
 }
 
 .content-card {
-  max-width: 350px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -122,6 +124,19 @@ const placeholderImage = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fww
   cursor: pointer;
   border-radius: 12px;
   overflow: hidden;
+}
+
+/* 2. Стили для контейнера */
+.card-image-container {
+  height: 280px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.card-content-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-card:hover {

@@ -29,6 +29,15 @@ useHead({
 </script>
 
 <style>
+:root {
+  --v-theme-background: #F7F8FC; /* Очень светло-серый фон */
+  --v-theme-surface: #FFFFFF;    /* Белый для карточек, шапки и т.д. */
+  --v-theme-primary: #2c3e50;    /* Глубокий серо-синий */
+  --v-theme-on-primary: #FFFFFF;
+  --v-theme-secondary: #34495e;  /* Более светлый серо-синий */
+  --v-theme-on-secondary: #FFFFFF;
+}
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -45,7 +54,7 @@ useHead({
 }
 
 .main-content {
-  background-color: #f5f5f5;
+  background-color: rgb(var(--v-theme-background));
   min-height: 100vh;
 }
 
@@ -68,10 +77,10 @@ useHead({
   text-overflow: ellipsis;
 }
 .custom-select-menu .v-list-item:hover {
-  background-color: rgba(25, 118, 210, 0.1);
+  background-color: rgba(44, 62, 80, 0.1); /* Цвет primary с прозрачностью */
 }
 .custom-select-menu .v-list-item--active {
-  background-color: #1976D2 !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
   color: white !important;
 }
 
