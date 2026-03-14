@@ -25,5 +25,8 @@ export const useDictionaryStore = defineStore('dictionary', {
         this.entities = { ...this.entities, ...entities }
       }
     },
+    clear() {
+      this.entities = {}
+    }
   }
 })

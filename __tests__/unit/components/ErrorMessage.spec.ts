@@ -28,17 +28,20 @@ describe('ErrorMessage', () => {
     expect(wrapper.emitted('retry')).toBeTruthy()
   })
 
-  it('испускает событие close при клике на иконку закрытия', async () => {
+  it('испускает событие close при событии click:close алерта', async () => {
     const wrapper = mount(ErrorMessage, {
       props: { message: 'Error' },
     })
-    const closeBtn = wrapper.find('.v-alert__close')
-    if (closeBtn.exists()) {
-      await closeBtn.trigger('click')
+
+    const alert = wrapper.findComponent({ name: 'VAlert' })
+    // happy-dom/стабы Vuetify могут не иметь имени компонента, поэтому дополнительно проверим на существование
+    if (alert.exists()) {
+      await alert.vm.$emit('click:close')
       expect(wrapper.emitted('close')).toBeTruthy()
     } else {
-      // Если нет иконки закрытия, тест пропускаем
-      expect(true).toBe(true)
+      // fallback: напрямую эмитим событие на корневом компоненте
+      await wrapper.vm.$emit('click:close')
+      expect(wrapper.emitted('close')).toBeTruthy()
     }
   })
 })

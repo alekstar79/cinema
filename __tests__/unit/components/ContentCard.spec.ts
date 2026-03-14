@@ -66,4 +66,15 @@ describe('ContentCard', () => {
     expect(nuxtLink.exists()).toBe(true)
     expect(nuxtLink.props('to')).toBe('/content/movies/123')
   })
+
+  it('передаёт placeholder-изображение через lazy-src', () => {
+    const wrapper = mount(ContentCard, {
+      props: { content: mockContent },
+      global: { plugins: [router] },
+    })
+
+    const img = wrapper.find('img')
+    expect(img.exists()).toBe(true)
+    expect(img.attributes('lazy-src')).toContain('data:image/svg+xml')
+  })
 })
