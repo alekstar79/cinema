@@ -33,13 +33,28 @@
 
 <script setup lang="ts">
 import { useShowcaseStore } from '~/stores/showcaseStore'
+import { useDictionaryStore } from '~/stores/dictionaryStore'
 import AppSkeleton from '~/components/ui/AppSkeleton.vue'
 import ErrorMessage from '~/components/ui/ErrorMessage.vue'
 import ContentCard from '~/components/content/ContentCard.vue'
 
 const showcaseStore = useShowcaseStore()
+const dictionaryStore = useDictionaryStore()
 
-await useAsyncData('index-data', () => showcaseStore.fetchMainPage())
+const { data } = await useAsyncData('index-data', () => showcaseStore.fetchMainPage())
+
+watchEffect(() => {
+  const value = data.value
+  if (!value) return
+
+  if (!showcaseStore.data && value.showcase) {
+    showcaseStore.$patch({ data: value.showcase })
+  }
+
+  if (!Object.keys(dictionaryStore.entities).length && value.dictionaries) {
+    dictionaryStore.setAllEntities(value.dictionaries)
+  }
+})
 
 const { slides, showcaseName } = storeToRefs(showcaseStore)
 

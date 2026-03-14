@@ -79,7 +79,20 @@ const router = useRouter()
 const showcaseStore = useShowcaseStore()
 const dictionaryStore = useDictionaryStore()
 
-await useAsyncData('movies-data', () => showcaseStore.fetchMainPage())
+const { data } = await useAsyncData('movies-data', () => showcaseStore.fetchMainPage())
+
+watchEffect(() => {
+  const value = data.value
+  if (!value) return
+
+  if (!showcaseStore.data && value.showcase) {
+    showcaseStore.$patch({ data: value.showcase })
+  }
+
+  if (!Object.keys(dictionaryStore.entities).length && value.dictionaries) {
+    dictionaryStore.setAllEntities(value.dictionaries)
+  }
+})
 
 const genres = computed(() => dictionaryStore.getEntitiesByType('genre'))
 

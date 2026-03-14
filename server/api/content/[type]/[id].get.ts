@@ -1,4 +1,5 @@
 import { EntityResolver } from '~/services/resolver/entityResolver.service'
+import type { EventHandler, H3Event } from 'h3'
 
 const apiBaseUrl = 'https://cms.test.ksfr.tech/api/v1'
 
@@ -19,7 +20,7 @@ const createResolverFetcher = (apiBase: string) => {
   }
 }
 
-export default defineEventHandler(async (event) => {
+const handler: EventHandler = defineEventHandler(async (event: H3Event) => {
   const { type, id } = event.context.params || {}
 
   if (!type || !id) {
@@ -50,3 +51,5 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
+
+export default handler
