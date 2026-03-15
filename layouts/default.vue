@@ -16,7 +16,10 @@
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '~/stores/themeStore'
 import AppHeader from '~/layouts/AppHeader.vue'
+
+const { initializeTheme } = useThemeStore()
 
 useHead({
   link: [
@@ -26,6 +29,8 @@ useHead({
     }
   ]
 })
+
+onMounted(initializeTheme)
 </script>
 
 <style>

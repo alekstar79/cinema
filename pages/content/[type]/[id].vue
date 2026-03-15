@@ -12,7 +12,6 @@
       <v-row>
         <v-col cols="12" md="4" class="poster-column">
           <v-card class="poster-card" elevation="10">
-            <!-- Используем существующий `posterUrl` -->
             <v-img :src="posterUrl" :lazy-src="placeholderImage" cover height="100%" />
           </v-card>
         </v-col>
