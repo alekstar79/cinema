@@ -30,11 +30,11 @@ useHead({
 
 <style>
 :root {
-  --v-theme-background: #F7F8FC; /* Очень светло-серый фон */
-  --v-theme-surface: #FFFFFF;    /* Белый для карточек, шапки и т.д. */
-  --v-theme-primary: #2c3e50;    /* Глубокий серо-синий */
+  --v-theme-background: #F7F8FC; /* Very light grey background */
+  --v-theme-surface: #FFFFFF;    /* White for cards, header, etc. */
+  --v-theme-primary: #2c3e50;    /* Deep grey-blue */
   --v-theme-on-primary: #FFFFFF;
-  --v-theme-secondary: #34495e;  /* Более светлый серо-синий */
+  --v-theme-secondary: #34495e;  /* Lighter grey-blue */
   --v-theme-on-secondary: #FFFFFF;
 }
 
@@ -77,7 +77,7 @@ useHead({
   text-overflow: ellipsis;
 }
 .custom-select-menu .v-list-item:hover {
-  background-color: rgba(44, 62, 80, 0.1); /* Цвет primary с прозрачностью */
+  background-color: rgba(44, 62, 80, 0.1); /* Primary color with transparency */
 }
 .custom-select-menu .v-list-item--active {
   background-color: rgb(var(--v-theme-primary)) !important;

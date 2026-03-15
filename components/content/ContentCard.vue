@@ -126,7 +126,7 @@ const placeholderImage = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fww
   overflow: hidden;
 }
 
-/* 2. Стили для контейнера */
+/* 2. Styles for the container */
 .card-image-container {
   height: 280px;
   flex-shrink: 0;
