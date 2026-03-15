@@ -29,15 +29,6 @@ useHead({
 </script>
 
 <style>
-:root {
-  --v-theme-background: #F7F8FC; /* Very light grey background */
-  --v-theme-surface: #FFFFFF;    /* White for cards, header, etc. */
-  --v-theme-primary: #2c3e50;    /* Deep grey-blue */
-  --v-theme-on-primary: #FFFFFF;
-  --v-theme-secondary: #34495e;  /* Lighter grey-blue */
-  --v-theme-on-secondary: #FFFFFF;
-}
-
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: opacity 0.3s ease, transform 0.3s ease;

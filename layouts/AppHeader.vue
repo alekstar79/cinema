@@ -23,12 +23,19 @@
       style="max-width: 300px;"
       @keyup.enter="search"
     />
+
+    <v-btn icon @click="themeStore.toggleTheme">
+      <v-icon>{{ themeStore.currentTheme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
+import { useThemeStore } from '~/stores/themeStore'
+
 const router = useRouter()
 const searchQuery = ref('')
+const themeStore = useThemeStore()
 
 const search = () => {
   if (searchQuery.value.trim()) {

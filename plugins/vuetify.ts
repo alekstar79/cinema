@@ -1,8 +1,44 @@
 import { defineNuxtPlugin } from 'nuxt/app'
-import { createVuetify } from 'vuetify'
+import { createVuetify, type ThemeDefinition } from 'vuetify'
+
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+
+import { useThemeStore } from '~/stores/themeStore'
+
 import 'vuetify/styles'
+
+const lightTheme: ThemeDefinition = {
+  dark: false,
+  colors: {
+    background: '#F7F8FC',
+    surface: '#FFFFFF',
+    primary: '#2c3e50',
+    'on-primary': '#FFFFFF',
+    secondary: '#34495e',
+    'on-secondary': '#FFFFFF',
+    error: '#B00020',
+    info: '#2196F3',
+    success: '#4CAF50',
+    warning: '#FB8C00',
+  },
+}
+
+const darkTheme: ThemeDefinition = {
+  dark: true,
+  colors: {
+    background: '#121212',
+    surface: '#1E1E1E',
+    primary: '#4a90e2',
+    'on-primary': '#FFFFFF',
+    secondary: '#5a768f',
+    'on-secondary': '#FFFFFF',
+    error: '#CF6679',
+    info: '#2196F3',
+    success: '#66BB6A',
+    warning: '#FFA726',
+  },
+}
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
@@ -10,36 +46,15 @@ export default defineNuxtPlugin((nuxtApp) => {
     components,
     directives,
     theme: {
-      defaultTheme: 'light',
       themes: {
-        light: {
-          colors: {
-            primary: '#1976D2',
-            secondary: '#FF4081',
-            accent: '#82B1FF',
-            error: '#FF5252',
-            info: '#2196F3',
-            success: '#4CAF50',
-            warning: '#FFC107',
-          },
-        },
-        dark: {
-          dark: true,
-          colors: {
-            primary: '#2196F3',
-            secondary: '#FF4081',
-            accent: '#FF4081',
-            error: '#FF5252',
-            info: '#2196F3',
-            success: '#4CAF50',
-            warning: '#FFC107',
-          },
-        },
+        light: lightTheme,
+        dark: darkTheme,
       },
     },
     defaults: {
       VCard: {
-        elevation: 2,
+        elevation: 0,
+        border: 'sm',
         rounded: 'lg',
       },
       VBtn: {
@@ -70,4 +85,16 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   nuxtApp.vueApp.use(vuetify)
+
+  // Syncing the Vuetify theme with the Pinia store
+  nuxtApp.hook('app:mounted', () => {
+    const themeStore = useThemeStore()
+    watch(
+      () => themeStore.currentTheme,
+      (newTheme) => {
+        vuetify.theme.change(newTheme)
+      },
+      { immediate: true }
+    )
+  })
 })
