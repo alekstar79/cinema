@@ -1,6 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
-const isGenerate = false // process.argv.includes('generate')
+const isGenerate = process.argv.includes('generate')
 
 export default defineNuxtConfig({
   ssr: true,
