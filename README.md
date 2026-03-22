@@ -1,4 +1,4 @@
-# Cinema (Nuxt 3 + TypeScript)
+# Cinema (Nuxt 4 + TypeScript)
 
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 [![GitHub](https://img.shields.io/badge/github-repo-green.svg?style=flat)](https://github.com/alekstar79/cinema)
